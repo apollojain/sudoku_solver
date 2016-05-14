@@ -1,4 +1,6 @@
-import legal_moves, copy, helpers, read_write
+import legal_moves, copy, helpers
+import read_write as rw
+import sys, os
 
 def solve_for_guarantees(sudoku_matrix):
 	'''
@@ -131,18 +133,51 @@ def sudoku_solve(sudoku_matrix):
 	solved_matrix = brute_force_solve(sudoku_matrix, sudoku_dictionary)
 	return solved_matrix
 
+def open_file(filename):
+	'''
+	DESCRIPTION
+	-----------
+	This opens a pdf file using adobe acrobat 
+
+	INPUT PARAMETERS
+	----------------
+	filename: string 
+		The name of your pdf, with file extension
+	OUTPUT PARAMETERS
+	-----------------
+	None (Your file is opened)
+	'''
+	if sys.platform == 'linux2':
+	    subprocess.call(["xdg-open", filename])
+	else:
+	    os.system('open ' + filename)
+
 if __name__ == '__main__':
-	matrix = [
-		[None, None, None, None, 7, 2, None, None, None], 
-		[9, None, None, None, None, None, None, 3, None],
-		[None, 6, None, 1, None, None, 4, None, None], 
-		[None, 8, None, None, 3, None, 5, None, None], 
-		[None, 7, 5, None, None, None, 2, 9, None],
-		[None, None, 6, None, 4, None, None, 8, None],
-		[None, None, 7, None, None, 8, None, 2, None], 
-		[None, 1, None, None, None, None, None, None, 9], 
-		[None, None, None, 9, 1, None, None, None, None]
-	]
-	result = sudoku_solve(matrix)
-	print "-----------"
-	print read_write.sudoku_html_table(result)
+	# matrix = [
+	# 	[None, None, None, None, 7, 2, None, None, None], 
+	# 	[9, None, None, None, None, None, None, 3, None],
+	# 	[None, 6, None, 1, None, None, 4, None, None], 
+	# 	[None, 8, None, None, 3, None, 5, None, None], 
+	# 	[None, 7, 5, None, None, None, 2, 9, None],
+	# 	[None, None, 6, None, 4, None, None, 8, None],
+	# 	[None, None, 7, None, None, 8, None, 2, None], 
+	# 	[None, 1, None, None, None, None, None, None, 9], 
+	# 	[None, None, None, 9, 1, None, None, None, None]
+	# ]
+	# result = sudoku_solve(matrix)
+	# print "-----------"
+	# print read_write.sudoku_html_table(result)
+	filename = sys.argv[1]
+	if len(filename) > 3: 
+		extension = filename[-3:]
+		image_arr = None
+		if extension == 'txt': 
+			image_arr = rw.read_from_file(filename)
+		else: 
+			image_arr = rw.read_from_image(filename)
+		
+		if image_arr is not None: 
+			solution = sudoku_solve(image_arr)
+			rw.sudoku_html_table(solution)
+			# subprocess.Popen(['out.pdf'],shell=True)
+			open_file('out.pdf')
