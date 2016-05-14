@@ -142,6 +142,27 @@ def split_sudoku_cells(img_name):
 			dictionary[i][j] = np.array(dictionary[i][j])
 	return dictionary
 
+def invert_image(imagem, name):
+	'''
+	DESCRIPTION 
+	-----------
+	This function inverts an image so that it can be read by the 
+	ocr python library. 
+
+	INPUT PARAMETERS 
+	----------------
+	imagem: np.array 
+		a numpy array that corresponds to the name of the image
+	name: string 
+		name of the image
+
+	OUTPUT PARAMETERS 
+	----------------
+	None (Image written to 'name')
+	'''
+	imagem = (255-imagem)
+	cv2.imwrite(name, imagem)
+
 def write_cells_to_images(img_name):
 	'''
 	DESCRIPTION 
@@ -167,3 +188,6 @@ def write_cells_to_images(img_name):
 			scipy.misc.imsave("intermediates/" + str(i) + str(j) + '.jpg', dictionary[i][j])
 			processed_img = pre_processing(str(i) + str(j) + '.jpg', 'intermediates/')[1]
 			scipy.misc.imsave("intermediates/" + str(i) + str(j) + '.jpg', processed_img)
+			image = cv2.imread("intermediates/" + str(i) + str(j) + '.jpg')
+			gs_imagem = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+			invert_image(gs_imagem, "intermediates/" + str(i) + str(j) + '.jpg')
